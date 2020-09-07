@@ -1,32 +1,45 @@
 let
   sources = import ./nix/sources.nix;
-  nixpkgs = sources."nixos-unstable";
+  nixpkgs = sources."nixpkgs-unstable";
   pkgs = import nixpkgs {};
   emacs-pgtk-nativecomp = sources."emacs-pgtk-nativecomp";
-  libPath = with pkgs; lib.concatStringsSep ":" [
-    "${lib.getLib libgccjit}/lib/gcc/${stdenv.targetPlatform.config}/${libgccjit.version}"
-    "${lib.getLib stdenv.cc.cc}/lib"
-    "${lib.getLib stdenv.glibc}/lib"
-  ];
-  emacsGccPgtk = builtins.foldl' (drv: fn: fn drv)
+  emacs-nativecomp = sources."emacs-nativecomp";
+  mkGitEmacs = attrs: builtins.foldl' (drv: fn: fn drv)
     pkgs.emacs
     [
 
       (drv: drv.override { srcRepo = true; })
+       (
+          drv:
+          let
+            # The nativeComp passthru attribute is used a heuristic to check if we're on 20.03 or older
+            usePgtk = !(pkgs.lib.hasAttr "usePgtk" (drv.passthru or { }));
+          in
+          if usePgtk then drv.overrideAttrs (
+            old: {
+              name = "emacsGccPgtk";
+              version = "28.0.50";
+              src = pkgs.fetchFromGitHub {
+                inherit (emacs-pgtk-nativecomp) owner repo rev sha256;
+              };
+
+              configureFlags = old.configureFlags
+              ++ [ "--with-pgtk" ];
+            }
+          ) else drv.overrideAttrs (
+            old: {
+              name = "emacsGcc";
+              version = "28.0.50";
+              src = pkgs.fetchFromGitHub {
+                inherit (emacs-nativecomp) owner repo rev sha256;
+              };
+            }
+        )
+        )
 
       (
         drv: drv.overrideAttrs (
           old: {
-            name = "emacsGccPgtk";
-            version = "28.0.50";
-            src = pkgs.fetchFromGitHub {
-              inherit (emacs-pgtk-nativecomp) owner repo rev sha256;
-            };
-
-            configureFlags = old.configureFlags
-            ++ [ "--with-pgtk" ];
-
-
             patches = [
               (
                 pkgs.fetchpatch {
@@ -64,18 +77,7 @@ _: _:
   {
     ci = (import ./nix {}).ci;
 
-    inherit emacsGccPgtk;
+    emacsGccPgtk = (mkGitEmacs {usePgtk = true;});
+    emacsGcc = (mkGitEmacs {usePgtk = false;});
 
-    emacsGccPgtkWrapped = pkgs.symlinkJoin {
-      name = "emacsGccPgtkWrapped";
-      paths = [ emacsGccPgtk ];
-      buildInputs = [ pkgs.makeWrapper ];
-      postBuild = ''
-        wrapProgram $out/bin/emacs \
-        --set LIBRARY_PATH ${libPath}
-      '';
-      meta.platforms = pkgs.stdenv.lib.platforms.linux;
-      passthru.nativeComp = true;
-      src = emacsGccPgtk.src;
-    };
   }

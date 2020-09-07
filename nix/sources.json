@@ -1,4 +1,16 @@
 {
+    "emacs-nativecomp": {
+        "branch": "feature/native-comp",
+        "description": "Mirror of GNU Emacs",
+        "homepage": "http://www.gnu.org/software/emacs/",
+        "owner": "emacs-mirror",
+        "repo": "emacs",
+        "rev": "eb8742598874d9bd4c84ff54730527c52d29d7ff",
+        "sha256": "0f3f1ia6i4nr3762dlski1628y7vn7lfv3i83wy0i694kzr7m5ji",
+        "type": "tarball",
+        "url": "https://github.com/emacs-mirror/emacs/archive/eb8742598874d9bd4c84ff54730527c52d29d7ff.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
     "emacs-pgtk-nativecomp": {
         "branch": "pgtk-nativecomp",
         "description": "Mirror of GNU Emacs",
@@ -45,6 +57,18 @@
         "sha256": "1gfjaa25nq4vprs13h30wasjxh79i67jj28v54lkj4ilqjhgh2rs",
         "type": "tarball",
         "url": "https://github.com/NixOS/nixpkgs/archive/51d115ac89d676345b05a0694b23bd2691bf708a.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nixpkgs-unstable": {
+        "branch": "nixpkgs-unstable",
+        "description": "Nix Packages collection",
+        "homepage": null,
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "3c0e3697520cbe7d9eb3a64bfd87de840bf4aa77",
+        "sha256": "1vx7kyaq0i287dragjgfdj94ggwr3ky2b7bq32l8rkd2k3vc3gl5",
+        "type": "tarball",
+        "url": "https://github.com/NixOS/nixpkgs/archive/3c0e3697520cbe7d9eb3a64bfd87de840bf4aa77.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "pre-commit-hooks.nix": {
