@@ -1,6 +1,6 @@
 let
   sources = import ./nix/sources.nix;
-  nixpkgs = sources."nixpkgs-unstable";
+  nixpkgs = sources."nixos-20.09";
   pkgs = import nixpkgs {};
   emacs-pgtk-nativecomp = sources."emacs-pgtk-nativecomp";
   emacs-nativecomp = sources."emacs-nativecomp";
@@ -11,11 +11,7 @@ let
       (drv: drv.override { srcRepo = true; })
        (
           drv:
-          let
-            # The nativeComp passthru attribute is used a heuristic to check if we're on 20.03 or older
-            usePgtk = !(pkgs.lib.hasAttr "usePgtk" (drv.passthru or { }));
-          in
-          if usePgtk then drv.overrideAttrs (
+          if attrs.usePgtk then drv.overrideAttrs (
             old: {
               name = "emacsGccPgtk";
               version = "28.0.50";
