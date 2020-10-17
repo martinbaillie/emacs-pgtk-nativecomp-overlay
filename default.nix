@@ -1,29 +1,41 @@
 let
   sources = import ./nix/sources.nix;
   nixpkgs = sources."nixos-unstable";
-  pkgs = import nixpkgs { };
-
+  pkgs = import nixpkgs {};
   emacs-pgtk-nativecomp = sources."emacs-pgtk-nativecomp";
-
-  emacsGccPgtk = builtins.foldl' (drv: fn: fn drv)
+  emacs-nativecomp = sources."emacs-nativecomp";
+  mkGitEmacs = attrs: builtins.foldl' (drv: fn: fn drv)
     pkgs.emacs
     [
 
       (drv: drv.override { srcRepo = true; })
+       (
+          drv:
+          if attrs.usePgtk then drv.overrideAttrs (
+            old: {
+              name = "emacsGccPgtk";
+              version = "28.0.50";
+              src = pkgs.fetchFromGitHub {
+                inherit (emacs-pgtk-nativecomp) owner repo rev sha256;
+              };
+
+              configureFlags = old.configureFlags
+              ++ [ "--with-pgtk" ];
+            }
+          ) else drv.overrideAttrs (
+            old: {
+              name = "emacsGcc";
+              version = "28.0.50";
+              src = pkgs.fetchFromGitHub {
+                inherit (emacs-nativecomp) owner repo rev sha256;
+              };
+            }
+        )
+        )
 
       (
         drv: drv.overrideAttrs (
           old: {
-            name = "emacsGccPgtk";
-            version = "28.0.50";
-            src = pkgs.fetchFromGitHub {
-              inherit (emacs-pgtk-nativecomp) owner repo rev sha256;
-            };
-
-            configureFlags = old.configureFlags
-              ++ [ "--with-pgtk" ];
-
-
             patches = [
               (
                 pkgs.fetchpatch {
@@ -61,6 +73,7 @@ _: _:
 {
   ci = (import ./nix { }).ci;
 
-  inherit emacsGccPgtk;
+    emacsGccPgtk = (mkGitEmacs {usePgtk = true;});
+    emacsGcc = (mkGitEmacs {usePgtk = false;});
 
-}
+  }
