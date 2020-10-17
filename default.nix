@@ -1,6 +1,6 @@
 let
   sources = import ./nix/sources.nix;
-  nixpkgs = sources."nixos-20.09";
+  nixpkgs = sources."nixos-unstable";
   pkgs = import nixpkgs {};
   emacs-pgtk-nativecomp = sources."emacs-pgtk-nativecomp";
   emacs-nativecomp = sources."emacs-nativecomp";
@@ -70,8 +70,8 @@ let
     ];
 in
 _: _:
-  {
-    ci = (import ./nix {}).ci;
+{
+  ci = (import ./nix { }).ci;
 
     emacsGccPgtk = (mkGitEmacs {usePgtk = true;});
     emacsGcc = (mkGitEmacs {usePgtk = false;});
