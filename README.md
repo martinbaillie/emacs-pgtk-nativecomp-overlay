@@ -12,12 +12,13 @@ import (builtins.fetchTarball {
     })
 ```
 
-Install emacsGccPgtk:
+Install emacsGccPgtk (only compatible with linux):
 ```
 nix-env -iA nixpkgs.emacsGccPgtk
 ```
+
+Install emacsGcc (compatible with linux and mac):
+```
+nix-env -iA nixpkgs.emacsGcc
+```
 or add to home-manager/configuration.nix.
-
-Note:
-
-Emacs no longer needs to be wrapped to find the appropriate libgccjit libraries, as such emacsGccPgtkWrapped was removed.
