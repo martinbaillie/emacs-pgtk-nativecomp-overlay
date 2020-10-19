@@ -17,8 +17,8 @@
         "homepage": "http://www.gnu.org/software/emacs/",
         "owner": "flatwhatson",
         "repo": "emacs",
-        "rev": "10d468ebd1b8657c9249f456a053f90612833041",
-        "sha256": "1lyi0jnq4ngycp567piwkkpgmxm326y0zhr65yp25ld1nqwvmgh0",
+        "rev": "d5791ba5feeb5500433ca43506dda13c7c67ce14",
+        "sha256": "0j2y3lp6px69w43gi5dqxkslq26zi3d0i54n44gl04apy7mgshxq",
         "type": "tarball",
         "url": "https://github.com/flatwhatson/emacs/archive/10d468ebd1b8657c9249f456a053f90612833041.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
