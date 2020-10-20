@@ -10,10 +10,8 @@ jobs:
     - uses: cachix/install-nix-action@v11
     - uses: cachix/cachix-action@v6
       with:
-        name: mjlbach
+        name: martinbaillie
         signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
-        # Only needed for private caches
-        #authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
     - run: nix-build build.nix
     - run: nix-shell --run "echo OK"
   build-macos:
@@ -21,13 +19,11 @@ jobs:
      steps:
      - uses: actions/checkout@v2.3.2
      - uses: cachix/install-nix-action@v10
-       with: 
+       with:
          skip_adding_nixpkgs_channel: true
      - uses: cachix/cachix-action@v6
        with:
-         name: mjlbach
+         name: martinbaillie
          signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
-         # Only needed for private caches
-         #authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
      - run: nix-build build.nix -A emacsGcc
      - run: nix-shell --run "echo OK"
